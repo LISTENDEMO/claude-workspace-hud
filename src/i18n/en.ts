@@ -27,14 +27,17 @@ export const labels = {
   githubConnected: 'connected',
   githubNotConnected: 'not connected',
   githubNoRemote: 'no remote',
-  githubCanPush: 'can push',
+  githubCanPush: 'synced',
   githubCannotPush: 'cannot push',
+  githubPending: 'pending',
+  githubUploaded: 'uploaded',
   githubRepo: 'repo',
   // Tips
   tips: '💡',
   tipCommands: 'Commands',
   tipBrowse: '/browse-files browse tree',
   tipSwitch: '/switch-session switch',
+  tipPush: '/push-github push to GitHub',
   tipConfigure: '/claude-workspace-hud:configure',
 };
 

@@ -26,11 +26,14 @@ export declare const labels: {
     githubNoRemote: string;
     githubCanPush: string;
     githubCannotPush: string;
+    githubPending: string;
+    githubUploaded: string;
     githubRepo: string;
     tips: string;
     tipCommands: string;
     tipBrowse: string;
     tipSwitch: string;
+    tipPush: string;
     tipConfigure: string;
 };
 export declare const formatStats: (stats: {

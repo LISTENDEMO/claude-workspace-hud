@@ -55,7 +55,8 @@ export interface GitHubStatus {
   hasRemote: boolean;         // git remote exists
   remoteUrl: string | null;   // GitHub remote URL
   repoName: string | null;    // repo name (owner/repo)
-  canPush: boolean;           // can push to GitHub
+  ahead: number;              // commits to push
+  isSynced: boolean;          // no pending commits
 }
 
 export interface RenderContext {

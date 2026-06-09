@@ -49,7 +49,8 @@ export interface GitHubStatus {
     hasRemote: boolean;
     remoteUrl: string | null;
     repoName: string | null;
-    canPush: boolean;
+    ahead: number;
+    isSynced: boolean;
 }
 export interface RenderContext {
     stdin: StdinData;

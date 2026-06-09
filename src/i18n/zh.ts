@@ -27,14 +27,17 @@ export const labels = {
   githubConnected: '已连接',
   githubNotConnected: '未连接',
   githubNoRemote: '无远程仓库',
-  githubCanPush: '可上传',
+  githubCanPush: '已同步',
   githubCannotPush: '无法上传',
+  githubPending: '待推送',
+  githubUploaded: '已上传',
   githubRepo: '仓库',
   // Tips
   tips: '💡',
   tipCommands: '可用命令',
   tipBrowse: '/browse-files 查看文件树',
   tipSwitch: '/switch-session 切换会话',
+  tipPush: '/push-github 推送到GitHub',
   tipConfigure: '/claude-workspace-hud:configure 配置',
 };
 

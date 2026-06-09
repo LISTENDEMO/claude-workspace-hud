@@ -235,6 +235,7 @@ export function getGitHubStatus(cwd: string): GitHubStatus | null {
   let hasRemote = false;
   let remoteUrl: string | null = null;
   let repoName: string | null = null;
+  let ahead = 0;
 
   try {
     const remotes = execSync('git remote -v', {
@@ -261,18 +262,33 @@ export function getGitHubStatus(cwd: string): GitHubStatus | null {
         break;
       }
     }
+
+    // Get ahead count (commits to push)
+    if (hasRemote) {
+      try {
+        const aheadResult = execSync('git rev-list --count @{upstream}..HEAD 2>/dev/null || echo 0', {
+          cwd: normalizedCwd,
+          encoding: 'utf8',
+          stdio: ['pipe', 'pipe', 'pipe']
+        }).trim();
+        ahead = parseInt(aheadResult, 10) || 0;
+      } catch {
+        ahead = 0;
+      }
+    }
   } catch {
     // Not a git repo or no remotes
   }
 
-  // Can push if logged in and has remote
-  const canPush = isLoggedIn && hasRemote;
+  // isSynced if logged in, has remote, and no pending commits
+  const isSynced = isLoggedIn && hasRemote && ahead === 0;
 
   return {
     isLoggedIn,
     hasRemote,
     remoteUrl,
     repoName,
-    canPush,
+    ahead,
+    isSynced,
   };
 }

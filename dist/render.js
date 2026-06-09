@@ -77,7 +77,11 @@ function renderGitHubLine(githubStatus, config) {
         if (githubStatus.repoName) {
             parts.push(colorize(githubStatus.repoName, 'cyan'));
         }
-        if (githubStatus.canPush) {
+        // Show sync status
+        if (githubStatus.ahead > 0) {
+            parts.push(colorize(`${labels.githubPending} ${githubStatus.ahead}`, 'yellow'));
+        }
+        else if (githubStatus.isSynced) {
             parts.push(colorize(labels.githubCanPush, 'green'));
         }
     }
@@ -116,6 +120,7 @@ function renderTipsLine(config) {
         return '';
     }
     const tips = [
+        labels.tipPush,
         labels.tipBrowse,
         labels.tipSwitch,
     ];

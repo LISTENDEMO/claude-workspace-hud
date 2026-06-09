@@ -10,7 +10,8 @@
     "./commands/setup.md",
     "./commands/configure.md",
     "./commands/switch-session.md",
-    "./commands/browse-files.md"
+    "./commands/browse-files.md",
+    "./commands/push-github.md"
   ],
   "homepage": "https://github.com/anthropics/claude-code",
   "repository": "https://github.com/anthropics/claude-code",
