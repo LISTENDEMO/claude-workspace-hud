@@ -1,90 +1,124 @@
 # Claude Workspace HUD
 
-一个 Claude Code 状态栏插件，显示当前工作区的会话和文件信息。
+一个 Claude Code 状态栏插件，显示 Git 状态、GitHub 连接状态，支持一键推送和版本管理。
 
 ## 功能
 
-- 📁 显示当前文件夹的文件统计（文件数量、目录数量、文件类型分布）
-- 📝 显示当前会话信息和其他会话列表
-- 🔄 支持快速切换会话（通过 `/switch-session` 命令）
+### 🌿 Git 状态显示
+- 当前分支名称
+- 未提交更改指示器 `*`
+- 待推送/待拉取数量 `↑N ↓N`
+- 文件更改统计 `+N ~N ?N`（暂存/未暂存/未跟踪）
+
+### 🐙 GitHub 连接状态
+- 登录状态检测（是否已登录 GitHub CLI）
+- 仓库连接状态（是否有远程仓库）
+- 仓库名称显示（`owner/repo` 格式）
+- 同步状态（`已同步` 或 `待推送 N`）
+
+### 🚀 快捷命令
+- `/push-github` - **一键推送 + 自动版本管理**
+  - 自动递增版本号（如 `0.1.0 → 0.1.1`）
+  - 创建 Git 提交
+  - 推送到 GitHub
+  - 自动创建版本标签
+- `/browse-files` - 查看完整文件树结构
+- `/switch-session` - 切换到其他会话
 
 ## 显示效果
 
-**默认布局（2行）**：
 ```
-📁 my-project | 15 文件, 3 目录 | .ts(8) .json(3) .md(2)
-📝 当前: fix-auth-bug (25m) | 其他会话: debug-api, setup-env, test-flow
+[glm-5] │ my-project                   ← 模型/项目名
+上下文 ████░░░░░░ 44%                   ← 上下文使用率
+🌿 main │ ↑2 │ +3 ~1 ?2                 ← Git 状态
+🐙 已连接 LISTENDEMO/my-project 已同步   ← GitHub 状态
 ```
 
 ## 安装
 
-### 方法 1：通过市场安装（推荐）
+### 方法 1：本地安装
 
 ```bash
-# 步骤 1：添加市场
-/plugin marketplace add anthropics/claude-code
+# 克隆仓库
+git clone https://github.com/LISTENDEMO/claude-workspace-hud.git
 
-# 步骤 2：安装插件
-/plugin install claude-workspace-hud
-
-# 步骤 3：重新加载插件
-/reload-plugins
-
-# 步骤 4：配置状态栏
-/claude-workspace-hud:setup
-```
-
-### 方法 2：本地安装
-
-```bash
-# 克隆或复制插件到 Claude 插件目录
-cd "G:\claude code\.claude\plug"
+# 安装依赖并构建
+cd claude-workspace-hud
 npm install
 npm run build
 
-# 在 Claude Code 中运行
-/plugin install ./G:\claude code\.claude\plug
-/claude-workspace-hud:setup
+# 复制到插件目录
+cp -r . ~/.claude/plugins/cache/local/claude-workspace-hud/0.1.0/
+
+# 在 Claude Code 中重新加载
+/reload-plugins
 ```
 
-## 配置
+### 方法 2：配置状态栏
 
-随时自定义您的 HUD：
+编辑 `~/.claude/settings.json`：
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/plugins/claude-workspace-hud/statusline-simple.sh"
+  }
+}
+```
+
+## GitHub 登录
+
+使用前需登录 GitHub CLI：
 
 ```bash
-/claude-workspace-hud:configure
+gh auth login
 ```
 
-### 配置选项
+登录后状态会永久保存（使用系统密钥库）。
+
+## 配置选项
+
+编辑 `~/.claude/plugins/claude-workspace-hud/config.json`：
+
+```json
+{
+  "language": "zh",
+  "display": {
+    "showGitStatus": true,
+    "showGitHub": true,
+    "showDepsInfo": false,
+    "showTips": false
+  }
+}
+```
 
 | 选项 | 说明 |
 |------|------|
-| `language` | HUD 标签语言：`en` (英文) 或 `zh` (中文) |
-| `showFileStats` | 显示文件统计信息 |
-| `showSessionList` | 显示其他会话列表 |
-| `showExtensions` | 显示文件类型分布 |
-| `maxSessions` | 显示的最大会话数量 |
-| `maxExtensions` | 显示的最大文件类型数量 |
+| `showGitStatus` | 显示 Git 分支和更改状态 |
+| `showGitHub` | 显示 GitHub 连接和同步状态 |
+| `showDepsInfo` | 显示 package.json 依赖数量 |
+| `showTips` | 显示快捷命令提示 |
 
-## 快速切换会话
+## 版本管理
 
-使用 `/switch-session` 命令查看并切换到其他会话：
-
-```bash
-/claude-workspace-hud:switch-session
-```
+每次使用 `/push-github` 命令时会自动：
+1. 递增 `package.json` 版本号
+2. 创建提交 `v0.1.X: update from Claude Code`
+3. 推送到 GitHub
+4. 创建 Git 标签 `v0.1.X`
 
 ## 运行环境要求
 
 - Claude Code v1.0.80+
 - Node.js 18+ 或 Bun
+- GitHub CLI (`gh`) - 用于 GitHub 状态检测和推送
 
 ## 开发
 
 ```bash
 npm install
 npm run build
-npm test
 ```
 
 ## 许可证
