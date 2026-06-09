@@ -1,0 +1,20 @@
+{
+  "name": "claude-workspace-hud",
+  "owner": {
+    "name": "Claude Workspace HUD",
+    "email": "workspace-hud@anthropic.com"
+  },
+  "metadata": {
+    "description": "Workspace HUD for Claude Code - session management, file stats, and quick session switching",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "claude-workspace-hud",
+      "source": "./",
+      "description": "Real-time workspace status showing session list, file statistics, and enabling quick session switching. 2-line compact layout, zero config required.",
+      "category": "management",
+      "tags": ["workspace", "session", "files", "hud", "management"]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "claude-workspace-hud",
+  "version": "0.1.0",
+  "description": "Workspace HUD for Claude Code - session management and file stats",
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist/",
+    "src/",
+    "commands/",
+    ".claude-plugin/"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "npm run build && node --test"
+  },
+  "keywords": [
+    "claude-code",
+    "workspace",
+    "session",
+    "files",
+    "hud"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "typescript": "^6.0.3"
+  }
+}

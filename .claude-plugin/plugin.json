@@ -1,0 +1,19 @@
+{
+  "name": "claude-workspace-hud",
+  "description": "Workspace HUD for Claude Code - session management, file stats, and quick session switching",
+  "version": "0.1.0",
+  "author": {
+    "name": "Claude Workspace HUD",
+    "url": "https://github.com/anthropics/claude-code"
+  },
+  "commands": [
+    "./commands/setup.md",
+    "./commands/configure.md",
+    "./commands/switch-session.md",
+    "./commands/browse-files.md"
+  ],
+  "homepage": "https://github.com/anthropics/claude-code",
+  "repository": "https://github.com/anthropics/claude-code",
+  "license": "MIT",
+  "keywords": ["workspace", "session", "files", "hud", "management", "claude-code", "browse"]
+}
