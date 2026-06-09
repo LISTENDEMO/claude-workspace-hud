@@ -1,6 +1,6 @@
 {
   "name": "claude-workspace-hud",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Workspace HUD for Claude Code - session management and file stats",
   "type": "module",
   "main": "dist/index.js",

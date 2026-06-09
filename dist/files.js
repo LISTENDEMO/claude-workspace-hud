@@ -187,34 +187,68 @@ export function getTopExtensions(stats, max) {
         .slice(0, max);
     return new Map(sorted);
 }
-export function getGitHubStatus(cwd) {
-    const normalizedCwd = normalizePath(cwd);
-    // Check if gh CLI is available
-    let isLoggedIn = false;
+// Cache for GitHub login status (global, not directory-specific)
+let cachedIsLoggedIn = null;
+let loginCheckTime = 0;
+const LOGIN_CACHE_DURATION = 60000; // Cache for 60 seconds
+function checkGitHubLogin() {
+    // Use cached result if available and recent
+    const now = Date.now();
+    if (cachedIsLoggedIn !== null && (now - loginCheckTime) < LOGIN_CACHE_DURATION) {
+        return cachedIsLoggedIn;
+    }
+    // Check if gh CLI is available and logged in
     try {
+        // Try gh auth status first
         const result = execSync('gh auth status', {
             encoding: 'utf8',
             stdio: ['pipe', 'pipe', 'pipe'],
             timeout: 5000
         });
-        isLoggedIn = result.includes('Logged in');
+        cachedIsLoggedIn = result.includes('Logged in') || result.includes('✓');
+        loginCheckTime = now;
+        return cachedIsLoggedIn;
     }
     catch {
-        // gh not logged in or not available
+        // Try alternative check with gh api user
         try {
-            // Try alternative check
             execSync('gh api user', {
                 encoding: 'utf8',
                 stdio: ['pipe', 'pipe', 'pipe'],
                 timeout: 5000
             });
-            isLoggedIn = true;
+            cachedIsLoggedIn = true;
+            loginCheckTime = now;
+            return true;
         }
         catch {
-            isLoggedIn = false;
+            // Last resort: check for gh config file
+            try {
+                // On Windows, check for gh config in AppData
+                const ghConfigPath = process.env.APPDATA
+                    ? path.join(process.env.APPDATA, 'GitHub CLI', 'hosts.yml')
+                    : null;
+                if (ghConfigPath && fs.existsSync(ghConfigPath)) {
+                    const configContent = fs.readFileSync(ghConfigPath, 'utf8');
+                    cachedIsLoggedIn = configContent.includes('oauth_token') || configContent.includes('user:');
+                    loginCheckTime = now;
+                    return cachedIsLoggedIn;
+                }
+            }
+            catch {
+                // Config file check failed
+            }
+            cachedIsLoggedIn = false;
+            loginCheckTime = now;
+            return false;
         }
     }
-    // Check for GitHub remote
+}
+export function getGitHubStatus(cwd) {
+    const normalizedCwd = normalizePath(cwd);
+    // Check GitHub login status (cached globally)
+    const isLoggedIn = checkGitHubLogin();
+    // Check for GitHub remote (directory-specific)
     let hasRemote = false;
     let remoteUrl = null;
     let repoName = null;
@@ -230,7 +264,7 @@ export function getGitHubStatus(cwd) {
         for (const line of lines) {
             if (line.includes('github.com')) {
                 hasRemote = true;
-                // Extract URL
+                // Extract repo name (owner/repo)
                 const match = line.match(/github\.com[:/]([^.\s]+)/);
                 if (match) {
                     repoName = match[1];
@@ -259,7 +293,7 @@ export function getGitHubStatus(cwd) {
         }
     }
     catch {
-        // Not a git repo or no remotes
+        // Not a git repo or no remotes - this is fine, just show login status
     }
     // isSynced if logged in, has remote, and no pending commits
     const isSynced = isLoggedIn && hasRemote && ahead === 0;
