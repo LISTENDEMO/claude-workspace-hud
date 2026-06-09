@@ -39,6 +39,21 @@ export const labels = {
     tipSwitch: '/switch-session 切换会话',
     tipPush: '/push-github 推送到GitHub',
     tipConfigure: '/claude-workspace-hud:configure 配置',
+    // Tasks
+    task: '📋',
+    tasks: '任务',
+    currentTask: '当前',
+    completed: '已完成',
+    inProgress: '进行中',
+    pending: '待处理',
+    noTasks: '无任务',
+    completionRate: '完成率',
+    // Agents
+    agent: '🤖',
+    agents: 'Agent',
+    running: '运行中',
+    background: '后台',
+    noAgents: '无运行',
 };
 export const formatStats = (stats) => {
     return `${stats.files} ${labels.files}, ${stats.dirs} ${labels.dirs}`;

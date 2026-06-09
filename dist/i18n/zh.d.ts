@@ -35,6 +35,19 @@ export declare const labels: {
     tipSwitch: string;
     tipPush: string;
     tipConfigure: string;
+    task: string;
+    tasks: string;
+    currentTask: string;
+    completed: string;
+    inProgress: string;
+    pending: string;
+    noTasks: string;
+    completionRate: string;
+    agent: string;
+    agents: string;
+    running: string;
+    background: string;
+    noAgents: string;
 };
 export declare const formatStats: (stats: {
     files: number;

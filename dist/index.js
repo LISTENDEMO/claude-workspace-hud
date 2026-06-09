@@ -5,6 +5,35 @@ import { render } from './render.js';
 import { setLanguage, t } from './i18n/index.js';
 import { fileURLToPath } from 'node:url';
 import { realpathSync } from 'node:fs';
+function extractTaskInfo(stdin) {
+    if (!stdin.tasks) {
+        return null;
+    }
+    const total = stdin.tasks.total ?? 0;
+    const completed = stdin.tasks.completed ?? 0;
+    const inProgress = stdin.tasks.in_progress ?? 0;
+    const pending = stdin.tasks.pending ?? 0;
+    const currentTask = stdin.tasks.current_task ?? null;
+    const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+    return {
+        total,
+        completed,
+        inProgress,
+        pending,
+        currentTask,
+        completionRate,
+    };
+}
+function extractAgentInfo(stdin) {
+    if (!stdin.agents) {
+        return null;
+    }
+    return {
+        total: stdin.agents.total ?? 0,
+        running: stdin.agents.running ?? 0,
+        background: stdin.agents.background ?? 0,
+    };
+}
 export async function main(overrides = {}) {
     const deps = {
         readStdin,
@@ -35,11 +64,17 @@ export async function main(overrides = {}) {
         const githubStatus = deps.getGitHubStatus(cwd);
         // Get deps info
         const depsInfo = deps.getDepsInfo(cwd);
+        // Extract task info from stdin
+        const taskInfo = extractTaskInfo(stdin);
+        // Extract agent info from stdin
+        const agentInfo = extractAgentInfo(stdin);
         const ctx = {
             stdin,
             gitStatus,
             githubStatus,
             depsInfo,
+            taskInfo,
+            agentInfo,
             config,
         };
         deps.render(ctx);

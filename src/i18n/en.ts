@@ -39,6 +39,21 @@ export const labels = {
   tipSwitch: '/switch-session switch',
   tipPush: '/push-github push to GitHub',
   tipConfigure: '/claude-workspace-hud:configure',
+  // Tasks
+  task: '📋',
+  tasks: 'tasks',
+  currentTask: 'current',
+  completed: 'done',
+  inProgress: 'active',
+  pending: 'pending',
+  noTasks: 'no tasks',
+  completionRate: 'rate',
+  // Agents
+  agent: '🤖',
+  agents: 'agents',
+  running: 'running',
+  background: 'bg',
+  noAgents: 'none',
 };
 
 export const formatStats = (stats: { files: number; dirs: number }): string => {

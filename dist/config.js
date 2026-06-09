@@ -8,6 +8,8 @@ export const DEFAULT_CONFIG = {
         showGitHub: true,
         showDepsInfo: true,
         showTips: true,
+        showTasks: true,
+        showAgents: true,
     },
     colors: {
         folder: 'yellow',
@@ -16,6 +18,8 @@ export const DEFAULT_CONFIG = {
         deps: 'cyan',
         tip: 'dim',
         label: 'dim',
+        task: 'brightBlue',
+        agent: 'brightMagenta',
     },
 };
 let pluginDir = null;

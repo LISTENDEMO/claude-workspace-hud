@@ -15,6 +15,18 @@ export interface StdinData {
         context_window_size?: number;
         used_percentage?: number | null;
     };
+    tasks?: {
+        total?: number;
+        completed?: number;
+        in_progress?: number;
+        pending?: number;
+        current_task?: string | null;
+    };
+    agents?: {
+        total?: number;
+        running?: number;
+        background?: number;
+    };
 }
 export interface SessionInfo {
     id: string;
@@ -52,11 +64,26 @@ export interface GitHubStatus {
     ahead: number;
     isSynced: boolean;
 }
+export interface TaskInfo {
+    total: number;
+    completed: number;
+    inProgress: number;
+    pending: number;
+    currentTask: string | null;
+    completionRate: number;
+}
+export interface AgentInfo {
+    total: number;
+    running: number;
+    background: number;
+}
 export interface RenderContext {
     stdin: StdinData;
     gitStatus: GitStatus | null;
     depsInfo: DepsInfo | null;
     githubStatus: GitHubStatus | null;
+    taskInfo: TaskInfo | null;
+    agentInfo: AgentInfo | null;
     config: WorkspaceConfig;
 }
 export type Language = 'en' | 'zh';

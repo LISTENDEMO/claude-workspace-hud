@@ -7,6 +7,8 @@ export interface WorkspaceConfig {
         showGitHub: boolean;
         showDepsInfo: boolean;
         showTips: boolean;
+        showTasks: boolean;
+        showAgents: boolean;
     };
     colors: {
         folder: string;
@@ -15,6 +17,8 @@ export interface WorkspaceConfig {
         deps: string;
         tip: string;
         label: string;
+        task: string;
+        agent: string;
     };
 }
 export declare const DEFAULT_CONFIG: WorkspaceConfig;

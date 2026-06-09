@@ -126,6 +126,68 @@ function renderTipsLine(config) {
     ];
     return colorize(labels.tips + ' ' + tips.join(' | '), 'dim');
 }
+function renderTaskLine(taskInfo, config) {
+    const labels = getLabels().labels;
+    if (!config.display.showTasks) {
+        return '';
+    }
+    if (!taskInfo || taskInfo.total === 0) {
+        return colorize(`${labels.task} ${labels.noTasks}`, 'dim');
+    }
+    const parts = [];
+    // Task icon
+    parts.push(colorize(labels.task, config.colors.task));
+    // Current task (truncated if too long)
+    if (taskInfo.currentTask) {
+        const taskDisplay = taskInfo.currentTask.length > 30
+            ? taskInfo.currentTask.substring(0, 30) + '...'
+            : taskInfo.currentTask;
+        parts.push(colorize(taskDisplay, 'cyan'));
+    }
+    // Progress: completed/total
+    parts.push(`${taskInfo.completed}/${taskInfo.total}`);
+    // Completion rate with color based on percentage
+    const rate = taskInfo.completionRate;
+    if (rate >= 80) {
+        parts.push(colorize(`${rate}%`, 'green'));
+    }
+    else if (rate >= 50) {
+        parts.push(colorize(`${rate}%`, 'yellow'));
+    }
+    else {
+        parts.push(colorize(`${rate}%`, 'red'));
+    }
+    // Progress bar
+    const barLength = 10;
+    const filled = Math.round(rate / 100 * barLength);
+    const empty = barLength - filled;
+    const bar = '█'.repeat(filled) + '░'.repeat(empty);
+    parts.push(colorize(bar, 'dim'));
+    return parts.join(' ');
+}
+function renderAgentLine(agentInfo, config) {
+    const labels = getLabels().labels;
+    if (!config.display.showAgents) {
+        return '';
+    }
+    if (!agentInfo || (agentInfo.running === 0 && agentInfo.background === 0)) {
+        return colorize(`${labels.agent} ${labels.noAgents}`, 'dim');
+    }
+    const parts = [];
+    // Agent icon
+    parts.push(colorize(labels.agent, config.colors.agent));
+    // Running agents
+    if (agentInfo.running > 0) {
+        parts.push(colorize(`${labels.running} ${agentInfo.running}`, 'green'));
+    }
+    // Background agents
+    if (agentInfo.background > 0) {
+        parts.push(colorize(`${labels.background} ${agentInfo.background}`, 'yellow'));
+    }
+    // Total
+    parts.push(colorize(`(${agentInfo.total})`, 'dim'));
+    return parts.join(' ');
+}
 export function render(ctx) {
     setLanguage(ctx.config.language);
     // Line 1: Git status (without project name, claude-hud shows it)
@@ -134,7 +196,11 @@ export function render(ctx) {
     const githubLine = renderGitHubLine(ctx.githubStatus, ctx.config);
     // Line 3: Dependencies info
     const depsLine = renderDepsLine(ctx.depsInfo, ctx.config);
-    // Line 4: Tips
+    // Line 4: Task status
+    const taskLine = renderTaskLine(ctx.taskInfo, ctx.config);
+    // Line 5: Agent status
+    const agentLine = renderAgentLine(ctx.agentInfo, ctx.config);
+    // Line 6: Tips
     const tipsLine = renderTipsLine(ctx.config);
     // Output - only show if there's data
     if (gitLine) {
@@ -145,6 +211,12 @@ export function render(ctx) {
     }
     if (depsLine) {
         console.log(depsLine);
+    }
+    if (taskLine) {
+        console.log(taskLine);
+    }
+    if (agentLine) {
+        console.log(agentLine);
     }
     if (tipsLine) {
         console.log(tipsLine);
