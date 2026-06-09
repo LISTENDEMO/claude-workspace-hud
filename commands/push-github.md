@@ -1,40 +1,62 @@
 ---
-description: Push current changes to GitHub
-allowed-tools: Bash
+description: Push current changes to GitHub with auto version bump
+allowed-tools: Bash, Read, Edit
 ---
 
-# Push to GitHub
+# Push to GitHub (with Version Management)
 
-Push all current changes to the GitHub remote repository.
+Push all current changes to GitHub and automatically bump the version number.
 
-## Step 1: Check Git Status
+## Step 1: Get Current Version
 
-First check the current git status:
+Read the current version from package.json:
+
+```bash
+cat "${cwd}/package.json" | grep '"version"' | head -1
+```
+
+## Step 2: Bump Version
+
+Parse current version and increment patch number:
+- If current is `0.1.0`, new version is `0.1.1`
+- If current is `0.1.5`, new version is `0.1.6`
+
+Update package.json with new version using Edit tool.
+
+## Step 3: Check Git Status
+
+Check what changes exist:
 
 ```bash
 cd "${cwd}" && git status --short
 ```
 
-## Step 2: Add and Commit
+## Step 4: Commit with Version
 
-If there are changes, add and commit them:
-
-```bash
-cd "${cwd}" && git add . && git commit -m "Update: auto-commit from Claude Code"
-```
-
-## Step 3: Push to GitHub
-
-Push to the remote:
+Create a commit with the new version:
 
 ```bash
-cd "${cwd}" && git push
+cd "${cwd}" && git add . && git commit -m "v${new_version}: update from Claude Code"
 ```
 
-## Step 4: Report Result
+## Step 5: Push to GitHub
 
-After pushing, report the result:
+Push to remote:
 
-- If successful: "✅ 已推送到 GitHub"
-- If no changes: "✅ 无需推送，已是最新状态"
-- If error: "❌ 推送失败: [error message]"
+```bash
+cd "${cwd}" && git push origin master
+```
+
+## Step 6: Create Git Tag (Optional)
+
+Create a version tag:
+
+```bash
+cd "${cwd}" && git tag v${new_version} && git push origin v${new_version}
+```
+
+## Step 7: Report Result
+
+After pushing, report:
+- "✅ 已推送到 GitHub (v${new_version})"
+- "📦 版本已更新: ${old_version} → ${new_version}"
